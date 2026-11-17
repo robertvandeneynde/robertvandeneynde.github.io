@@ -1,2 +1,250 @@
-Salut ! Je suis une oie :)
-Hello I'm a Goose :)
+<!doctype html>
+<html ng-app="app">
+    <head>
+        <meta charset="utf-8" />
+        link href="smallrob.png" rel="icon" type="image/png"/>
+        <title>Site de Robert Vanden Eynde</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <meta property="og:description" content="Robert Vanden Eynde's website" />
+        meta property="og:title" content="Robert Vanden Eynde's website" />
+        meta property="og:image" content="https://robertvandeneynde.be/smallrob.png" />
+        
+        <style> /*
+            body {
+                font-size: 16px;
+                text-align: center;
+                background: url('wood.jpg');
+                background-position-y: 22px;
+                background-repeat: repeat-x repeat-y;
+            }
+            h1, h2, #tags-header, .lang-selector, footer, .shadow {
+                color: black;
+                text-shadow: 1px 1px 2px white, 0 0 1em white, 0 0 0.2em white;
+                font-weight: bold;
+            }
+            .lang-selector {
+                padding: 0;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+            h1 {
+                margin-bottom: 10px;
+            }
+            h2 {
+                padding: 0;
+                margin: 10px 0;
+            }
+            section {
+                border: 1px solid #999;
+                display: inline-block;
+                width: 200px;
+                height: 200px;
+                padding: 15px;
+                background: #fbf2e3;
+                vertical-align: top;
+                text-align: center;
+                line-height: 24px;
+                margin: 10px;
+                cursor: pointer;
+            }
+            #visitor-name {
+                border: 1px solid #999;
+                background: #fbf2e3;
+                margin-top: 10px;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 950px;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            section:hover {
+                border: 1px solid #f90;
+                background: #ffeecc;
+            }
+            section {
+                list-style-type: none;
+                margin-left: 15px;
+            }
+            section img {
+                vertical-align: middle;
+                margin-right: 5px;
+                height: 50px;
+            }
+            section my-title {
+                display: block;
+                margin-bottom: 5px;
+            }
+            section span {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+            .section-wrapper {
+                text-align: center;
+            }
+            .tok, .interesting a, .tags a {
+                border: 2px solid #ccc;
+                border-radius: 5px;
+                display: inline-block;
+                background: #fbf2e3;
+                color: #339;
+                margin: 2px;
+                padding: 5px;
+            }
+            .interesting a {
+                display: inline-block; /* table */
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                min-width:200px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            h1 {
+                color: #333;
+            }
+            .selected {
+                font-weight: bold;
+            }
+            footer a {
+                color:#444;
+            }
+            .rainbow {
+                background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+                border-radius: 5px;
+                padding: 4px;
+                color: white;
+            }
+        */ </style>
+        script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+        script>
+        $(function(){
+            $('section').click(function(){
+                var a = $(this).find('a').eq(0) // will be the image
+                if(a)
+                    window.location = a.attr('href')
+            })
+            
+            $('.tags').each(function(){
+                var toks = $(this).find('.tok').toArray()
+                
+                // shuffle toks
+                for(var i = 0; i < toks.length; i++) {
+                    var j = toks.length - i
+                    var n = Math.floor(Math.random() * j)
+                    var save = toks[j-1];
+                    toks[j-1] = toks[n]
+                    toks[n] = save
+                }
+                console.log(toks)
+                
+                $(this).find('.tok').remove()
+                $(this).append(toks)
+            })
+            
+            $('.spaceless').each(function(){
+                for(var x = this.firstChild; x; ) {
+                    var toDelete = x.nodeName == "#text" && x.nodeValue.trim() == '' ? x : null;
+                    
+                    x = x.nextSibling
+                    
+                    if(toDelete)
+                        toDelete.remove()
+                }
+            })
+            
+            
+            $('#name-form').each(function(){
+                var loading = $(this).find('.loading')
+                loading.hide()
+            }).on('submit', function(ev){
+                var url = $(this).find('[name=name]').val().trim().toLowerCase() + '/'
+                url = url.replace(/é|è/g, 'e')
+                url = url.replace(/à/g, 'a')
+                var loading = $(this).find('.loading')
+                loading.show()
+                $.ajax({
+                    method:'HEAD',
+                    url: url,
+                })
+                .done(function(){
+                    window.location = url
+                })
+                .fail(function(){
+                    alert('not found :( I have nothing for you sorry...')
+                })
+                .always(function(){
+                    loading.hide()
+                })
+                ev.preventDefault()
+            })
+
+            $('a').each(function(){
+                if(! /^\s*$/.exec(this.innerHTML))
+                    return
+                // replaces the innerHTML with a nice formatting of the href attribute
+                // if this has class "by" or "includeby", the html will be link "nice-article (by robertvandeneynde.be)"
+                function simplify(url, includeby) {
+                    var data = /^(https?):\/\/(www\.)?(.*)$/.exec(url)
+                    if(! data)
+                        return url // when no protocol
+                    var is_secure = data[1] == 'https'
+                    var path = data[3]
+                    if(path.indexOf('/') == -1)
+                        return path
+                    var split = path.split('/')
+                    var last = split[split.length - 1]
+                    if(last.trim())
+                        return last + (!includeby ? '' : ' (by {})'.replace('{}', split[0]))
+                    
+                    return split[0] // robertvandeneynde.be when https://www.robertvandeneynde.be
+                    
+                }
+                this.innerHTML = simplify(this.getAttribute('href'), this.getAttribute('class').indexOf('by') != -1)
+            })
+        })
+        </script>
+        
+        script>
+        
+        angular.module('app', [])
+        .controller('Controller', ['$scope', function($scope) {
+            function wanted_lang() {
+                return (location.hash == '#en' ? 'en' :
+                        location.hash == "#ru" ? 'ru' :
+                        location.hash == '#uk' ? 'uk' : 'default')
+            }
+            
+            // initial values
+            var lang = wanted_lang()
+            $scope.lang = lang == 'default' ? 'fr' : lang
+            
+            // getters / non stored variables
+            $scope.__defineGetter__('fr', function(){ return $scope.lang == 'fr' })
+            $scope.__defineGetter__('en', function(){ return $scope.lang == 'en' })
+            $scope.__defineGetter__('ru', function(){ return $scope.lang == 'ru' })
+            $scope.__defineGetter__('uk', function(){ return $scope.lang == 'uk' })
+            $scope.__defineGetter__('unknown', function(){ return $scope.lang == 'unknown' })
+            
+            $scope.$watch('lang', function(){
+                location.hash = '#' + $scope.lang
+            })
+            
+            $(window).on('hashchange', function() {
+                var lang = wanted_lang()
+                $scope.lang = lang == 'default' ? 'fr' : lang
+                
+                $scope.$digest()
+            });
+        }]);
+
+        </script>
+    </head>
+    <body ng-controller="Controller">
+	Je suis l'oie
+	I 	am the goose :)
+    </body>
+</html><pre style="background: #eee">
+Goose :)
