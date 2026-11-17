@@ -2,13 +2,13 @@
 <html ng-app="app">
     <head>
         <meta charset="utf-8" />
-        link href="smallrob.png" rel="icon" type="image/png"/>
-        <title>Site de Robert Vanden Eynde</title>
+	<!-- link href="smallrob.png" rel="icon" type="image/png"/> -->
+        <title>Site de Robert Vanden Eynde</title> 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         <meta property="og:description" content="Robert Vanden Eynde's website" />
-        meta property="og:title" content="Robert Vanden Eynde's website" />
-        meta property="og:image" content="https://robertvandeneynde.be/smallrob.png" />
+	<!-- <meta property="og:title" content="Robert Vanden Eynde's website" /> -->
+	<!-- meta property="og:image" content="https://robertvandeneynde.be/smallrob.png" /> -->
         
         <style> /*
             body {
@@ -117,10 +117,10 @@
                 color: white;
             }
         */ </style>
-        script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-        script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
-        script>
-        $(function(){
+	<!-- script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> -->
+	<!-- script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script> -->
+        <script>
+        /* $(function(){
             $('section').click(function(){
                 var a = $(this).find('a').eq(0) // will be the image
                 if(a)
@@ -205,9 +205,9 @@
                 this.innerHTML = simplify(this.getAttribute('href'), this.getAttribute('class').indexOf('by') != -1)
             })
         })
-        </script>
+        */ </script>
         
-        script>
+        <script> /*
         
         angular.module('app', [])
         .controller('Controller', ['$scope', function($scope) {
@@ -240,7 +240,7 @@
             });
         }]);
 
-        </script>
+        */ </script>
     </head>
     <body ng-controller="Controller">
 	Je suis l'oie
